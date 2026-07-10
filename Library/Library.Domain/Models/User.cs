@@ -18,6 +18,8 @@ namespace Library.Domain
         private string email;
 
         private string password;
+        public bool IsVerified { get; set; } = false;
+        
 
         public Role Role { get; set; } = Role.Client;
 
@@ -64,7 +66,14 @@ namespace Library.Domain
             }
         }
 
-
+        protected User() { }
+        protected User (int id, string username, string email, string password)
+        {
+            Id = id;
+            Username = username;
+            Email = email;
+            Password = password;
+        }
 
     }
 }
