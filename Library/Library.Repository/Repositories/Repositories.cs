@@ -6,24 +6,25 @@ using System.Text;
 using System.IO;
 using System.Text.Json;
 using Library.Domain.Models;
+using System.Text.Json.Nodes;
 
 namespace Library.Repository.Repositories
 {
     public class Repositories : IFileMeneger
     {
-        private readonly string filePath = "C:\\Users\\deme\\Desktop\\codes\\doit_midterm\\LibraryMidterm\\Library\\Library.Repository\\Data\\data.txt";
+        private readonly string filePath = "C:\\Users\\user\\OneDrive\\Desktop\\demes_doit_midterm\\LibraryMidterm\\Library\\Library.Repository\\Data\\data.txt";
         public void AddUser(User user)
         {
             string line = JsonSerializer.Serialize(user);
             File.AppendAllText(filePath, line);
         }
 
-        public void DeleteStudent(int id)
+        public void DeleteUser(int id)
         {
             throw new NotImplementedException();
         }
 
-        public User GetLastLoggedInStudent()
+        public User GetLastLoggedInUser()
         {
             throw new NotImplementedException();
         }
@@ -53,7 +54,7 @@ namespace Library.Repository.Repositories
             File.AppendAllLines(filePath, users.Select(s => JsonSerializer.Serialize(s)));
         }
 
-        public void UpdateStudent(User user)
+        public void UpdateUser(User user)
         {
             List<User> users = GetAllUsers();
             int index = users.FindIndex(s => s.Id == user.Id);
@@ -80,10 +81,31 @@ namespace Library.Repository.Repositories
                 {
                     continue;
                 }
-                User user = JsonSerializer.Deserialize<User>(item);
-                if(user != null)
+                try
                 {
-                    users.Add(user);
+                    var jsonNode = JsonNode.Parse(item);
+
+                    if (jsonNode != null && jsonNode[2] != null)
+                    {
+                        AdminUser admin = JsonSerializer.Deserialize<AdminUser>(item);
+                        if (admin != null)
+                        {
+                            users.Add(admin);
+                        }
+                    }
+                    else
+                    {
+
+                        User user = JsonSerializer.Deserialize<User>(item);
+                        if (user != null)
+                        {
+                            users.Add(user);
+                        }
+                    }
+                }
+                catch (JsonException)
+                {
+                    continue;
                 }
             }
             return users;

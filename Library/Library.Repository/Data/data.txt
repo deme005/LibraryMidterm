@@ -1,1 +1,1 @@
-﻿
+﻿{"IsVerified":false,"Role":0,"Username":"deme","Email":"deme@gmail.com","Password":"$2a$11$ak5dQlRjLlhoS5c/VApVbOhl6oBoJ8e/2nsB5V8dJ2ePkMQileO5C"}

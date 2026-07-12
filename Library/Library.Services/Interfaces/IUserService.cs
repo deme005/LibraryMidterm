@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Library.Services.Interfaces
 {
-    internal interface IUserService
+    public interface IUserService
     {
         void RegisterUser(string username, string email, string password);
 

@@ -6,5 +6,6 @@ namespace Library.Domain.Models
 {
     internal class BorrowRecord
     {
+
     }
 }

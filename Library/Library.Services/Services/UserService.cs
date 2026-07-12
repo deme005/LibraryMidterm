@@ -29,7 +29,7 @@ namespace Library.Services.Services
                     return user;
                 }
             }
-            throw new Exception("Invalid emial or password or not varified");
+            throw new Exception("Invalid email or password or not varified");
 
         }
 

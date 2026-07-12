@@ -13,10 +13,10 @@ namespace Library.Domain.Interfaces
         User GetUserByEmail(string email);
         User GetUserByUsername(string username);
         void AddUser(User user);
-        void UpdateStudent(User user);
-        void DeleteStudent(int id);
+        void UpdateUser(User user);
+        void DeleteUser(int id);
 
         void SaveChanges(List<User> user);
-        public User GetLastLoggedInStudent();
+        public User GetLastLoggedInUser();
     }
 }
