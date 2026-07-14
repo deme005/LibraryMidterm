@@ -18,10 +18,12 @@ namespace Library.Domain
         private string email;
 
         private string password;
+        
         public bool IsVerified { get; set; } = false;
         
 
         public Role Role { get; set; } = Role.Client;
+        public string VerificationCode { get; set; }
 
 
         public string Username

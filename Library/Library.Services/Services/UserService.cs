@@ -12,24 +12,26 @@ namespace Library.Services.Services
     public class UserService : IUserService
     {
         private readonly IFileMeneger _fileManager;
-        
-        public UserService(IFileMeneger fileManager)
+        private readonly EmailService _emailService;
+
+        public UserService(IFileMeneger fileManager, EmailService emailService)
         {
             _fileManager = fileManager;
+            _emailService = emailService;
         }
 
-        
+
         public User LoginUser(string email, string password)
         {
             User user = _fileManager.GetUserByEmail(email);
-            if(user != null)
+            if (user != null)
             {
-                if(BCrypt.Net.BCrypt.Verify(password, user.Password))
+                if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
                     return user;
                 }
             }
-            throw new Exception("Invalid email or password or not varified");
+            throw new Exception("Invalid email or password");
 
         }
 
@@ -39,7 +41,7 @@ namespace Library.Services.Services
             int nextId = users.Count + 1;
 
             var existingUser = _fileManager.GetUserByEmail(email);
-            if(existingUser != null)
+            if (existingUser != null)
             {
                 throw new Exception("A user with this email already exists.");
             }
@@ -58,7 +60,25 @@ namespace Library.Services.Services
 
         public void SendVerificationCode(string email, string verificationCode)
         {
-            throw new NotImplementedException();
+            _emailService.SeedEmail(email, "Verification Code", verificationCode);
+        }
+
+        public bool VerifyUser(string email, string verificationCode)
+        {
+            var user = _fileManager.GetUserByEmail(email);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            if(user.VerificationCode == verificationCode)
+            {
+                user.IsVerified = true;
+                _fileManager.UpdateUser(user);
+                Console.WriteLine("Verification successful");
+                return true;
+            }
+            Console.WriteLine("Invalid verification code. try again.");
+            return false;
         }
     }
 }

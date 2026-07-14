@@ -17,6 +17,5 @@ namespace Library.Domain.Interfaces
         void DeleteUser(int id);
 
         void SaveChanges(List<User> user);
-        public User GetLastLoggedInUser();
     }
 }

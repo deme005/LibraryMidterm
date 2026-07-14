@@ -11,15 +11,9 @@ namespace Library.UI
 {
     public class ConsoleUI
     {
-        public void DisplayMessage(string message)
-        {
-            Console.WriteLine(message);
-        }
-        public string GetInput(string prompt)
-        {
-            Console.Write(prompt);
-            return Console.ReadLine();
-        }
+        private static readonly IFileMeneger _repo = new Repositories();
+        private static readonly EmailService _emailService = new EmailService();
+        private static readonly UserService _userService = new UserService(_repo, _emailService);
 
         public static void Menu()
         {
@@ -35,11 +29,9 @@ namespace Library.UI
             string email = Console.ReadLine();
             Console.WriteLine("Enter your password:");
             string password = Console.ReadLine();
-            
-            IFileMeneger repo = new Repositories();
-            UserService userService = new UserService(repo);
 
-            userService.RegisterUser(username, email, password);
+
+            _userService.RegisterUser(username, email, password);
         }
 
         public static void loginMenu()
@@ -49,13 +41,181 @@ namespace Library.UI
             Console.WriteLine("Enter password: ");
             string password = Console.ReadLine();
 
-            IFileMeneger repo = new Repositories();
-            UserService userService = new UserService(repo);
+            _userService.LoginUser(email, password);
+        }
+        public static void FirstMenu()
+        {
+            bool loop = false;
+            while (!loop)
+            {
+                Menu();
 
-            userService.LoginUser(email, password);
+                int.TryParse(Console.ReadLine(), out int loop1);
+                switch (loop1)
+                {
+                    case 1:
+                        RegisterMenu();
+                        break;
+                    case 2:
+                        loginMenu();
+                        break;
+                    case 3:
+                        return;
+                    default:
+                        Console.WriteLine("invalid input");
+                        break;
+
+                }
+            }
+
+
+        }
+        public static void ClientMenu(User client)
+        {
+            ClientUser clientUser = client as ClientUser;
+            bool loggedIn = true;
+            while (loggedIn)
+            {
+                Console.WriteLine("1. Browse Book Catalog");
+                Console.WriteLine("2. Search for a Book");
+                Console.WriteLine("3. Request to Borrow a Book");
+                Console.WriteLine("4. Return a Book");
+                Console.WriteLine("5. View My Borrow Requests & History");
+                Console.WriteLine("6. Pay Fines");
+                Console.WriteLine("7. Log Out");
+
+                int.TryParse(Console.ReadLine(), out int loop);
+
+                switch (loop)
+                {
+                    case 1:
+                        ViewAllBooks();
+                        break;
+                    case 2:
+                        SearchBook();
+                        break;
+                    case 3:
+                        RequestBorrow(clientUser);
+                        break;
+                    case 4:
+                        ReturnBook(clientUser);
+                        break;
+                    case 5:
+                        ViewMyBorrows(clientUser);
+                        break;
+                    case 6:
+                        PayFines(clientUser);
+                        break;
+                    case 7:
+                        Console.WriteLine("Logging out...");
+                        loggedIn = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
+        }
+        public static void ViewAllBooks()
+        {
+            // Implementation
+        }
+        public static void SearchBook()
+        {
+            // Implementation
+        }
+        public static void RequestBorrow(ClientUser clientUser)
+        {
+            // Implementation
+        }
+        public static void ReturnBook(ClientUser clientUser)
+        {
+            // Implementation
+        }
+        public static void ViewMyBorrows(ClientUser clientUser)
+        {
+            // Implementation
+        }
+        public static void PayFines(ClientUser clientUser)
+        {
+            // Implementation
         }
 
+        public static void ShowAdminMenu(User admin)
+        {
+            AdminUser adminUser = admin as AdminUser;
+            bool loggedIn = true;
 
+            while (loggedIn)
+            {
+                Console.WriteLine($"\n=== ADMIN DASHBOARD (Welcome, {adminUser.Username}) ===");
+                Console.WriteLine("1. View Book Catalog (კატალოგის დათვალიერება)");
+                Console.WriteLine("2. Add New Book (ახალი წიგნის დამატება)");
+                Console.WriteLine("3. Update Book Quantity (წიგნის რაოდენობის მართვა)");
+                Console.WriteLine("4. Remove a Book (წიგნის წაშლა)");
+                Console.WriteLine("5. View & Manage Borrow Requests (მოთხოვნების მართვა - Approve/Reject)");
+                Console.WriteLine("6. Send Due Date Warnings & Alerts (შეტყობინებების გაგზავნა)");
+                Console.WriteLine("7. View All Users (მომხმარებლების სია)");
+                Console.WriteLine("8. Log Out (გამოსვლა)");
+                Console.Write("Choose an option: ");
 
+                int.TryParse(Console.ReadLine(), out int choice);
+                switch (choice)
+                {
+                    case 1:
+                        ViewAllBooks();
+                        break;
+                    case 2:
+                        AddNewBook();
+                        break;
+                    case 3:
+                        UpdateBookQuantity();
+                        break;
+                    case 4:
+                        RemoveBook();
+                        break;
+                    case 5:
+                        ManageBorrowRequests();
+                        break;
+                    case 6:
+                        SendDueWarnings();
+                        break;
+                    case 7:
+                        ViewAllUsers();
+                        break;
+                    case 8:
+                        Console.WriteLine("Logging out of admin panel...");
+                        loggedIn = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
+        }
+        public static void AddNewBook()
+        {
+            // Implementation
+        }
+        public static void UpdateBookQuantity()
+        {
+            // Implementation 
+        }
+        public static void RemoveBook()
+        {
+            // Implementation 
+        }
+        public static void ManageBorrowRequests()
+        {
+            // Implementation 
+        }
+        public static void SendDueWarnings()
+        {
+            // Implementation 
+        }
+        public static void ViewAllUsers()
+        {
+            // Implementation 
+        }
     }
 }

@@ -24,15 +24,18 @@ namespace Library.Repository.Repositories
             throw new NotImplementedException();
         }
 
-        public User GetLastLoggedInUser()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public User GetUserByEmail(string email)
         {
             List<User> users = GetAllUsers();
             User user = users.FirstOrDefault(s => s.Email == email);
+            return user;
+        }
+        public User GetUserByUsername(string username)
+        {
+            List<User> users = GetAllUsers();
+            User user = users.FirstOrDefault(s => s.Username == username);
             return user;
         }
 
@@ -43,10 +46,6 @@ namespace Library.Repository.Repositories
             return user;
         }
 
-        public User GetUserByUsername(string username)
-        {
-            throw new NotImplementedException();
-        }
 
         public void SaveChanges(List<User> users)
         {
