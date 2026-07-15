@@ -12,16 +12,31 @@ namespace Library.Repository.Repositories
 {
     public class UserRepositories : IFileMeneger
     {
-        private readonly string filePath = "C:\\Users\\user\\OneDrive\\Desktop\\demes_doit_midterm\\LibraryMidterm\\Library\\Library.Repository\\Data\\data.txt";
+        private readonly string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "data.txt");
+
+        public UserRepositories()
+        {
+            string directory = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, "");
+            }
+        }
         public void AddUser(User user)
         {
             string line = JsonSerializer.Serialize(user);
-            File.AppendAllText(filePath, line);
+            File.AppendAllText(filePath, line + Environment.NewLine);
         }
 
         public void DeleteUser(int id)
         {
-            throw new NotImplementedException();
+            List<User> users = GetAllUsers();
+            List<User> remainingUsers = users.Where(s => s.Id != id).ToList();
+            SaveChanges(remainingUsers);
         }
 
         
@@ -50,7 +65,7 @@ namespace Library.Repository.Repositories
         public void SaveChanges(List<User> users)
         {
             File.Delete(filePath);
-            File.AppendAllLines(filePath, users.Select(s => JsonSerializer.Serialize(s)));
+            File.AppendAllLines(filePath, users.Select(s => JsonSerializer.Serialize(s, s.GetType())));
         }
 
         public void UpdateUser(User user)
@@ -83,22 +98,29 @@ namespace Library.Repository.Repositories
                 try
                 {
                     var jsonNode = JsonNode.Parse(item);
+                    if (jsonNode == null) continue;
 
-                    if (jsonNode != null && jsonNode[2] != null)
+                    var roleNode = jsonNode["Role"];
+                    if (roleNode != null)
                     {
-                        AdminUser admin = JsonSerializer.Deserialize<AdminUser>(item);
-                        if (admin != null)
+                        string roleStr = roleNode.ToString();
+
+                        if (roleStr == "Admin" || roleStr == "1")
                         {
-                            users.Add(admin);
+                            AdminUser admin = JsonSerializer.Deserialize<AdminUser>(item);
+                            if (admin != null)
+                            {
+                                users.Add(admin);
+                            }
                         }
-                    }
-                    else
-                    {
-
-                        User user = JsonSerializer.Deserialize<User>(item);
-                        if (user != null)
+                        else
                         {
-                            users.Add(user);
+
+                            ClientUser user = JsonSerializer.Deserialize<ClientUser>(item);
+                            if (user != null)
+                            {
+                                users.Add(user);
+                            }
                         }
                     }
                 }
