@@ -7,7 +7,10 @@ namespace Library.Domain.Models
 {
     public class AdminUser : User
     {
-        public AdminUser() : base() { }
+        public AdminUser() : base()
+        {
+            Role = Role.Admin;
+        }
         public AdminUser(int id, string username, string email, string password) : base(id, username, email, password)
         {
         }

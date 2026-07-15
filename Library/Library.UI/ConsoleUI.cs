@@ -11,7 +11,7 @@ namespace Library.UI
 {
     public class ConsoleUI
     {
-        private static readonly IFileMeneger _repo = new Repositories();
+        private static readonly IFileMeneger _repo = new UserRepositories();
         private static readonly EmailService _emailService = new EmailService();
         private static readonly UserService _userService = new UserService(_repo, _emailService);
 
@@ -82,7 +82,8 @@ namespace Library.UI
                 Console.WriteLine("4. Return a Book");
                 Console.WriteLine("5. View My Borrow Requests & History");
                 Console.WriteLine("6. Pay Fines");
-                Console.WriteLine("7. Log Out");
+                Console.WriteLine("7. Verify account");
+                Console.WriteLine("8. Log Out");
 
                 int.TryParse(Console.ReadLine(), out int loop);
 
@@ -107,6 +108,8 @@ namespace Library.UI
                         PayFines(clientUser);
                         break;
                     case 7:
+                        break;
+                    case 8:
                         Console.WriteLine("Logging out...");
                         loggedIn = false;
                         break;

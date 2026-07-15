@@ -26,6 +26,18 @@ namespace Library.Domain
         public string VerificationCode { get; set; }
 
 
+        public int ID
+        {
+            get { return Id; }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException("ID can not be zero or negative!");
+                }
+                Id = value;
+            }
+        }
         public string Username
 
         {

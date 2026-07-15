@@ -10,7 +10,7 @@ using System.Text.Json.Nodes;
 
 namespace Library.Repository.Repositories
 {
-    public class Repositories : IFileMeneger
+    public class UserRepositories : IFileMeneger
     {
         private readonly string filePath = "C:\\Users\\user\\OneDrive\\Desktop\\demes_doit_midterm\\LibraryMidterm\\Library\\Library.Repository\\Data\\data.txt";
         public void AddUser(User user)

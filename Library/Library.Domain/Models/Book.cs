@@ -6,11 +6,38 @@ namespace Library.Domain.Models
 {
     public class Book
     {
-		private string name;
+		private string title;
 		private string author;
 		private string genre;
+		private string isbn;
+		private int quantity;
 
-		public string Genre
+        public int Quantity
+        {
+            get { return quantity; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("quantity cannot be negative."); 
+                }
+                quantity = value;
+            }
+        }
+        public string ISBN
+        {
+            get { return isbn; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Invalid input.");
+                }
+                isbn = value.Trim();
+            }
+        }
+
+        public string Genre
 		{
 			get {  return genre; }
 			set
@@ -19,7 +46,7 @@ namespace Library.Domain.Models
                 {
                     throw new ArgumentException("Invalid input.");
                 }
-                genre = value;
+                genre = value.Trim();
             }
 		}
 
@@ -32,23 +59,57 @@ namespace Library.Domain.Models
                 {
                     throw new ArgumentException("Invalid input.");
                 }
-                author = value;
+                author = value.Trim();
             }
         }
 
 
-		public string Name
+		public string Title
 		{
-			get { return name; }
+			get { return title; }
 			set
 			{
 				if (string.IsNullOrWhiteSpace(value))
 				{
 					throw new ArgumentException("Invalid input.");
 				}
-				name = value;
+				title = value.Trim();
 			}
 		}
 
-	}
+        public Book() { }
+
+        public Book(string title, string author, string genre, string isbn, int quantity)
+        {
+            Title = title;
+            Author = author;
+            Genre = genre;
+            ISBN = isbn;
+            Quantity = quantity;
+        }
+
+
+
+        public void IncreaseQuantity(int amount)
+        {
+            if (amount <= 0)
+            {
+                throw new ArgumentException("Amount to increase must be positive.");
+            }
+                Quantity += amount;
+        }
+        public void DecreaseQuantity(int amount)
+        {
+            if (amount <= 0)
+            {
+                throw new ArgumentException("Amount to decrease must be positive.");
+            }
+            if (Quantity - amount < 0)
+            {
+                throw new InvalidOperationException("Not enough books in stock."); 
+            }
+            Quantity -= amount;
+        }
+
+    }
 }
