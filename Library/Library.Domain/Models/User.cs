@@ -1,4 +1,5 @@
 ﻿using Library.Domain.Enums;
+using Library.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +10,7 @@ namespace Library.Domain
 {
 
 
-    public abstract class User
+    public abstract class User : IKeyedEntity
     {
         public int Id;
 
@@ -51,6 +52,7 @@ namespace Library.Domain
                 username = value.Trim();
             }
         }
+        public string Key => Username;
 
         public string Email
 

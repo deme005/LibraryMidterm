@@ -7,29 +7,30 @@ using System.IO;
 using System.Text.Json;
 using Library.Domain.Models;
 using System.Text.Json.Nodes;
+using Library.Repository.Repositories.Helper;
 
 namespace Library.Repository.Repositories
 {
-    public class UserRepositories : IFileMeneger
+    public class UserRepositories : GenericRepository<User>, IFileMeneger
     {
-        private readonly string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "data.txt");
+        protected override string FileName => "users.txt";
 
         public UserRepositories()
         {
-            string directory = Path.GetDirectoryName(filePath);
+            string directory = Path.GetDirectoryName(FileName);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
-            if (!File.Exists(filePath))
+            if (!File.Exists(FileName))
             {
-                File.WriteAllText(filePath, "");
+                File.WriteAllText(FileName, "");
             }
         }
         public void AddUser(User user)
         {
             string line = JsonSerializer.Serialize(user);
-            File.AppendAllText(filePath, line + Environment.NewLine);
+            File.AppendAllText(FileName, line + Environment.NewLine);
         }
 
         public void DeleteUser(int id)
@@ -64,8 +65,8 @@ namespace Library.Repository.Repositories
 
         public void SaveChanges(List<User> users)
         {
-            File.Delete(filePath);
-            File.AppendAllLines(filePath, users.Select(s => JsonSerializer.Serialize(s, s.GetType())));
+            File.Delete(FileName);
+            File.AppendAllLines(FileName, users.Select(s => JsonSerializer.Serialize(s, s.GetType())));
         }
 
         public void UpdateUser(User user)
@@ -82,11 +83,11 @@ namespace Library.Repository.Repositories
         public List<User> GetAllUsers()
         {
             
-            if (!File.Exists(filePath))
+            if (!File.Exists(FileName))
             {
                 return new List<User>();
             }
-            string[] lines = File.ReadAllLines(filePath);
+            string[] lines = File.ReadAllLines(FileName);
             List<User> users = new List<User>();
 
             foreach (var item in lines)

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Library.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Library.Domain.Models
 {
-    public class Book
+    public class Book : IKeyedEntity
     {
 		private string title;
 		private string author;
@@ -36,6 +37,7 @@ namespace Library.Domain.Models
                 isbn = value.Trim();
             }
         }
+        public string Key => ISBN;
 
         public string Genre
 		{

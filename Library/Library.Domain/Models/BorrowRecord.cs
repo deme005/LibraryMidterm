@@ -1,14 +1,15 @@
 ﻿using Library.Domain.Enums;
+using Library.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Library.Domain.Models
 {
-    public class BorrowRecord
+    public class BorrowRecord : IKeyedEntity
     {
         private string borrowID;
-        private int userID; 
+        private int userId; 
         private string isbn; 
         private DateTime returnDate; 
         public Status BorrowStatus { get; set; }
@@ -25,16 +26,17 @@ namespace Library.Domain.Models
                 borrowID = value.Trim();
             }
         }
-        public int UserID
+        public string Key => BorrowID;
+        public int UserId
         {
-            get { return userID; }
+            get { return userId; }
             set
             {
                 if (value <= 0)
                 {
                     throw new ArgumentException("Invalid input.");
                 }
-                userID = value;
+                userId = value;
             }
         }
         public string ISBN
@@ -67,7 +69,7 @@ namespace Library.Domain.Models
         public BorrowRecord(string borrowID, int userID, string isbn, DateTime returnDate, Status borrowStatus)
         {
             BorrowID = borrowID;
-            UserID = userID;
+            UserId = userID;
             ISBN = isbn;
             ReturnDate = returnDate;
             BorrowStatus = borrowStatus;
