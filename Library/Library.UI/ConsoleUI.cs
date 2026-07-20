@@ -14,6 +14,7 @@ namespace Library.UI
         private static readonly IFileMeneger _repo = new UserRepositories();
         private static readonly EmailService _emailService = new EmailService();
         private static readonly UserService _userService = new UserService(_repo, _emailService);
+        private static readonly BookService _bookService = new BookService(new BookRepositories());
 
         public static void Menu()
         {
@@ -73,6 +74,7 @@ namespace Library.UI
         public static void ClientMenu(User client)
         {
             ClientUser clientUser = client as ClientUser;
+            
             bool loggedIn = true;
             while (loggedIn)
             {
@@ -93,7 +95,7 @@ namespace Library.UI
                         ViewAllBooks();
                         break;
                     case 2:
-                        SearchBook();
+                        SearchBook(_bookService);
                         break;
                     case 3:
                         RequestBorrow(clientUser);
@@ -121,15 +123,37 @@ namespace Library.UI
         }
         public static void ViewAllBooks()
         {
-            // Implementation
+            Console.Clear();
+            Console.WriteLine("--- Book Catalog ---");
+            var books = _bookService.GetAllBooks();
+            if (books == null || books.Count == 0)
+            {
+                Console.WriteLine("No books found in the library catalog.");
+            }
+            else
+            {
+                foreach (var book in books)
+                {
+                    Console.WriteLine($"ID: {book.Key} | Title: {book.Title} | Author: {book.Author} | Quantity: {book.Quantity}");
+                }
+            }
+            Console.WriteLine("\nPress any key to return to the menu...");
+            Console.ReadKey();
         }
-        public static void SearchBook()
+        public static void SearchBook(BookService bookService)
         {
-            // Implementation
+            Console.WriteLine("Enter the name of the book: ");
+            string bookName = Console.ReadLine();
+            var foundBooks = bookService.SearchBooks(bookName);
+            foreach (var book in foundBooks)
+            {
+                Console.WriteLine($"- {book.Title} by {book.Author} (Qty: {book.Quantity})");
+            }
         }
         public static void RequestBorrow(ClientUser clientUser)
         {
-            // Implementation
+            
+
         }
         public static void ReturnBook(ClientUser clientUser)
         {

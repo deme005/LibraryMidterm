@@ -15,22 +15,25 @@ namespace Library.Repository.Repositories
     {
         protected override string FileName => "users.txt";
 
+        protected string filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", FileName);
+
+
         public UserRepositories()
         {
-            string directory = Path.GetDirectoryName(FileName);
+            string directory = Path.GetDirectoryName(filePath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
-            if (!File.Exists(FileName))
+            if (!File.Exists(filePath))
             {
-                File.WriteAllText(FileName, "");
+                File.WriteAllText(filePath, "");
             }
         }
         public void AddUser(User user)
         {
             string line = JsonSerializer.Serialize(user);
-            File.AppendAllText(FileName, line + Environment.NewLine);
+            File.AppendAllText(filePath, line + Environment.NewLine);
         }
 
         public void DeleteUser(int id)
@@ -65,8 +68,8 @@ namespace Library.Repository.Repositories
 
         public void SaveChanges(List<User> users)
         {
-            File.Delete(FileName);
-            File.AppendAllLines(FileName, users.Select(s => JsonSerializer.Serialize(s, s.GetType())));
+            File.Delete(filePath);
+            File.AppendAllLines(filePath, users.Select(s => JsonSerializer.Serialize(s, s.GetType())));
         }
 
         public void UpdateUser(User user)
@@ -83,11 +86,11 @@ namespace Library.Repository.Repositories
         public List<User> GetAllUsers()
         {
             
-            if (!File.Exists(FileName))
+            if (!File.Exists(filePath))
             {
                 return new List<User>();
             }
-            string[] lines = File.ReadAllLines(FileName);
+            string[] lines = File.ReadAllLines(filePath);
             List<User> users = new List<User>();
 
             foreach (var item in lines)

@@ -1,4 +1,5 @@
 ﻿using Library.Domain.Enums;
+using Library.Domain.Interfaces;
 using Library.Domain.Models;
 using Library.Repository.Repositories.Helper;
 using System;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Library.Repository.Repositories
 {
-    public class BorrowRepositories : GenericRepository<BorrowRecord>
+    public class BorrowRepositories : GenericRepository<BorrowRecord>, IBorrowRepository
     {
         protected override string FileName => "borrows.txt";
 
