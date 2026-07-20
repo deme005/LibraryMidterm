@@ -11,9 +11,9 @@ using Library.Repository.Repositories.Helper;
 
 namespace Library.Repository.Repositories
 {
-    public class UserRepositories : GenericRepository<User>, IFileMeneger
+    public class UserRepositories : IFileMeneger
     {
-        protected override string FileName => "users.txt";
+        protected string FileName = "users.txt";
 
         protected string filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", FileName);
 

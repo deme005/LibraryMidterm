@@ -125,7 +125,7 @@ namespace Library.UI
         {
             Console.Clear();
             Console.WriteLine("--- Book Catalog ---");
-            var books = _bookService.GetAllBooks();
+            var books = _bookService.GetAvailableBooks();
             if (books == null || books.Count == 0)
             {
                 Console.WriteLine("No books found in the library catalog.");
