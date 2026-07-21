@@ -10,9 +10,9 @@ namespace Library.Domain
 {
 
 
-    public abstract class User : IKeyedEntity
+    public abstract class User 
     {
-        public int Id;
+        private int id;
 
         private string username;
 
@@ -29,14 +29,14 @@ namespace Library.Domain
 
         public int ID
         {
-            get { return Id; }
+            get { return id; }
             set
             {
                 if (value <= 0)
                 {
                     throw new ArgumentException("ID can not be zero or negative!");
                 }
-                Id = value;
+                id = value;
             }
         }
         public string Username
@@ -85,7 +85,7 @@ namespace Library.Domain
         protected User() { }
         protected User (int id, string username, string email, string password)
         {
-            Id = id;
+            ID = id;
             Username = username;
             Email = email;
             Password = password;

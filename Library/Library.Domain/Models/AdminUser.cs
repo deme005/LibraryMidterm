@@ -10,6 +10,7 @@ namespace Library.Domain.Models
         public AdminUser() : base()
         {
             Role = Role.Admin;
+            VerificationCode = "1234"; // Set a default verification code for admin users
         }
         public AdminUser(int id, string username, string email, string password) : base(id, username, email, password)
         {

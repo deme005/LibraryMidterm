@@ -14,5 +14,8 @@ namespace Library.Services.Interfaces
         List<BorrowRecord> GetActiveBorrows();
         void ApproveRequest(string borrowRecordKey);
         void RejectRequest(string borrowRecordKey);
+        void ApproveBorrow(string borrowId);
+        void RejectBorrow(string borrowId);
+        Decimal CalculateFine(BorrowRecord record);
     }
 }

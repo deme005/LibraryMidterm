@@ -10,5 +10,8 @@ namespace Library.Services.Interfaces
         List<Book> GetAvailableBooks();
         List<Book> SearchBooks(string name);
         void AdjustInventory(string bookId, int amount);
+        void AddBook(Book book);
+        void UpdateQuantity(string key, int newQuantity);
+        void DeleteBook(string bookId);
     }
 }

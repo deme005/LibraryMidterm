@@ -1,4 +1,5 @@
 ﻿using Library.Domain;
+using Library.Domain.Enums;
 using Library.Domain.Interfaces;
 using Library.Domain.Models;
 using Library.Services.Interfaces;
@@ -18,6 +19,7 @@ namespace Library.Services.Services
         {
             _fileManager = fileManager;
             _emailService = emailService;
+            SeedDefaultAdmin();
         }
 
 
@@ -46,9 +48,9 @@ namespace Library.Services.Services
                 throw new Exception("A user with this email already exists.");
             }
 
-            ClientUser user = new()
+            ClientUser user = new ClientUser
             {
-                Id = nextId,
+                ID = nextId,
                 Username = username,
                 Email = email,
                 Password = BCrypt.Net.BCrypt.HashPassword(password),
@@ -79,6 +81,25 @@ namespace Library.Services.Services
             }
             Console.WriteLine("Invalid verification code. try again.");
             return false;
+        }
+        private void SeedDefaultAdmin()
+        {
+            var users = _fileManager.GetAllUsers();
+
+            if (users == null || !users.Any(u => u.Email == "admin@library.com"))
+            {
+                var admin = new AdminUser
+                {
+                    ID = 1000,
+                    Username = "admin",
+                    Email = "admin@library.com",
+                    Password = BCrypt.Net.BCrypt.HashPassword("Admin123"),
+                    Role = Role.Admin,
+                    IsVerified = true
+                };
+
+                _fileManager.AddUser(admin);
+            }
         }
     }
 }

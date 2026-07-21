@@ -1,1 +1,2 @@
-﻿{"IsVerified":false,"Role":0,"Username":"deme","Email":"deme@gmail.com","Password":"$2a$11$ak5dQlRjLlhoS5c/VApVbOhl6oBoJ8e/2nsB5V8dJ2ePkMQileO5C"}
+﻿{"IsVerified":true,"Role":1,"VerificationCode":"1234","ID":1000,"Username":"admin","Key":"admin","Email":"admin@library.com","Password":"$2a$11$UzB5B5102e/PrAxrpqaiN.Ft3isLpViBFo0/yrN4wGzSz.z./Gafi"}
+{"Fines":0,"IsVerified":false,"Role":0,"VerificationCode":null,"ID":2,"Username":"deme","Key":"deme","Email":"deme@gmail.com","Password":"$2a$11$FogAJgMbBo9/705f5GEt.eKLyZGjxOYXjL.YiecIWs173dyl8k2jG"}

@@ -10,8 +10,9 @@ namespace Library.Domain.Models
     {
         private string borrowID;
         private int userId; 
-        private string isbn; 
-        private DateTime returnDate; 
+        private string isbn;
+        private DateTime returnDate;
+        public DateTime DateOfBorrow { get; set; } = DateTime.Now;
         public Status BorrowStatus { get; set; }
 
         public string BorrowID

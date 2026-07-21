@@ -13,10 +13,8 @@ namespace Library.Repository.Repositories
 {
     public class UserRepositories : IFileMeneger
     {
-        protected string FileName = "users.txt";
-
-        protected string filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", FileName);
-
+        protected string FileName = "data.txt";
+        protected string filePath => @"C:\Users\deme\Desktop\‏\codes\doit_midterm\LibraryMidterm\Library\Library.Repository\Data\" + FileName;
 
         public UserRepositories()
         {
@@ -30,41 +28,39 @@ namespace Library.Repository.Repositories
                 File.WriteAllText(filePath, "");
             }
         }
+
         public void AddUser(User user)
         {
-            string line = JsonSerializer.Serialize(user);
+            if (user == null) return;
+            
+            string line = JsonSerializer.Serialize(user, user.GetType());
             File.AppendAllText(filePath, line + Environment.NewLine);
         }
 
         public void DeleteUser(int id)
         {
             List<User> users = GetAllUsers();
-            List<User> remainingUsers = users.Where(s => s.Id != id).ToList();
+            List<User> remainingUsers = users.Where(s => s.ID != id).ToList();
             SaveChanges(remainingUsers);
         }
-
-        
 
         public User GetUserByEmail(string email)
         {
             List<User> users = GetAllUsers();
-            User user = users.FirstOrDefault(s => s.Email == email);
-            return user;
+            return users.FirstOrDefault(s => s.Email != null && s.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
+
         public User GetUserByUsername(string username)
         {
             List<User> users = GetAllUsers();
-            User user = users.FirstOrDefault(s => s.Username == username);
-            return user;
+            return users.FirstOrDefault(s => s.Username != null && s.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
         }
 
         public User GetUserById(int id)
         {
             List<User> users = GetAllUsers();
-            User user = users.FirstOrDefault(s => s.Id == id);
-            return user;
+            return users.FirstOrDefault(s => s.ID == id);
         }
-
 
         public void SaveChanges(List<User> users)
         {
@@ -75,30 +71,28 @@ namespace Library.Repository.Repositories
         public void UpdateUser(User user)
         {
             List<User> users = GetAllUsers();
-            int index = users.FindIndex(s => s.Id == user.Id);
-            if(index != -1)
+            int index = users.FindIndex(s => s.ID == user.ID);
+            if (index != -1)
             {
                 users[index] = user;
+                SaveChanges(users);
             }
-            SaveChanges(users);
         }
 
         public List<User> GetAllUsers()
         {
-            
             if (!File.Exists(filePath))
             {
                 return new List<User>();
             }
+
             string[] lines = File.ReadAllLines(filePath);
             List<User> users = new List<User>();
 
             foreach (var item in lines)
             {
-                if (string.IsNullOrWhiteSpace(item))
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(item)) continue;
+
                 try
                 {
                     var jsonNode = JsonNode.Parse(item);
@@ -112,19 +106,12 @@ namespace Library.Repository.Repositories
                         if (roleStr == "Admin" || roleStr == "1")
                         {
                             AdminUser admin = JsonSerializer.Deserialize<AdminUser>(item);
-                            if (admin != null)
-                            {
-                                users.Add(admin);
-                            }
+                            if (admin != null) users.Add(admin);
                         }
                         else
                         {
-
-                            ClientUser user = JsonSerializer.Deserialize<ClientUser>(item);
-                            if (user != null)
-                            {
-                                users.Add(user);
-                            }
+                            ClientUser client = JsonSerializer.Deserialize<ClientUser>(item);
+                            if (client != null) users.Add(client);
                         }
                     }
                 }

@@ -47,6 +47,34 @@ namespace Library.Services.Services
             book.Quantity += amount;
             _bookRepository.Update(book);
         }
+        public void AddBook(Book book)
+        {
+            if (book == null)
+            {
+                throw new ArgumentNullException(nameof(book), "Book cannot be null.");
+            }
+            _bookRepository.Add(book);
+        }
+        public void UpdateQuantity(string key, int newQuantity)
+        {
+            if (newQuantity < 0)
+                throw new ArgumentException("Quantity cannot be negative.", nameof(newQuantity));
+
+            var book = _bookRepository.GetByKey(key)
+                ?? throw new KeyNotFoundException($"Book with ID {key} not found.");
+
+            book.Quantity = newQuantity;
+            _bookRepository.Update(book);
+        }
+        public void DeleteBook(string bookId)
+        {
+            Book book = _bookRepository.GetByKey(bookId);
+            if (book == null)
+            {
+                throw new Exception("Book not found.");
+            }
+            _bookRepository.Delete(book);
+        }
     }
 }
 
