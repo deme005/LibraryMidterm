@@ -7,6 +7,7 @@ using Library.Services.Interfaces;
 using Library.Services.Services;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace Library.UI
@@ -15,9 +16,10 @@ namespace Library.UI
     {
         private static readonly IFileMeneger _repo = new UserRepositories();
         private static readonly EmailService _emailService = new EmailService();
-        private static readonly UserService _userService = new UserService(_repo, _emailService);
+        private static readonly UserService _userService = new UserService(_repo, _emailService, _loggerService);
         private static readonly BookService _bookService = new BookService(new BookRepositories());
         private static readonly BorrowService _borrowService = new BorrowService(new BorrowRepositories(), new BookRepositories(), new UserRepositories());
+        private static readonly ILoggerService _loggerService = new LoggerService();
 
         public static void Menu()
         {
@@ -89,10 +91,9 @@ namespace Library.UI
 
 
         }
-        public static void ClientMenu(User client)
+        public static void ClientMenu(ClientUser client)
         {
-            ClientUser clientUser = client as ClientUser;
-            
+            _loggerService.LogActivity(client.Username, "Client logged in");
             bool loggedIn = true;
             while (loggedIn)
             {
@@ -103,7 +104,8 @@ namespace Library.UI
                 Console.WriteLine("5. View My Borrow Requests & History");
                 Console.WriteLine("6. Pay Fines");
                 Console.WriteLine("7. Verify account");
-                Console.WriteLine("8. Log Out");
+                Console.WriteLine("8. Change password");
+                Console.WriteLine("9. Log Out");
 
                 int.TryParse(Console.ReadLine(), out int loop);
 
@@ -116,22 +118,26 @@ namespace Library.UI
                         SearchBook(_bookService);
                         break;
                     case 3:
-                        RequestBorrow(clientUser);
+                        RequestBorrow(client);
                         break;
                     case 4:
-                        ReturnBook(clientUser);
+                        ReturnBook(client);
                         break;
                     case 5:
-                        ViewMyBorrows(clientUser);
+                        ViewMyBorrows(client);
                         break;
                     case 6:
-                        PayFines(clientUser);
+                        PayFines(client);
                         break;
                     case 7:
-                        VerifyAccount();
+                        VerifyAccount(client);
                         break;
                     case 8:
+                        ChangePasswordUI(client);
+                        break;
+                    case 9:
                         Console.WriteLine("Logging out...");
+                        _loggerService.LogActivity(client.Username, "Clinet logged out");
                         loggedIn = false;
                         break;
                     default:
@@ -192,7 +198,7 @@ namespace Library.UI
             try
             {
                 _borrowService.RequestBorrow(clientUser, isbn);
-
+                _loggerService.LogActivity(clientUser.Username, $"Requested borrow for book ISBN: {isbn}");
                 Console.WriteLine("\n[Success] Borrow request submitted! Waiting for Admin approval.");
             }
             catch (Exception ex)
@@ -205,7 +211,6 @@ namespace Library.UI
             Console.Clear();
             Console.WriteLine("--- Return a Book ---");
 
-            // Get active borrows for this user
             var activeBorrows = _borrowService.GetUserHistory(clientUser.ID.ToString())
                 .Where(b => b.BorrowStatus == Status.Approved)
                 .ToList();
@@ -228,7 +233,7 @@ namespace Library.UI
             try
             {
                 _borrowService.ReturnBook(recordKey);
-
+                _loggerService.LogActivity(clientUser.Username, $"Returned book borrow ID: {recordKey}");
                 Console.WriteLine("\n[Success] Book returned successfully! Stock updated.");
             }
             catch (Exception ex)
@@ -274,7 +279,10 @@ namespace Library.UI
 
                 if (answer?.ToLower() == "y")
                 {
+                    decimal paidAmount = clientUser.Fines; // Capture before clearing!
                     clientUser.Fines = 0;
+
+                    _loggerService.LogActivity(clientUser.Username, $"Paid fines amounting to ${paidAmount:F2}");
                     Console.WriteLine("\n[Success] All outstanding fines have been cleared!");
                 }
                 else
@@ -283,36 +291,64 @@ namespace Library.UI
                 }
             }
         }
-        private static void VerifyAccount()
+        private static void ChangePasswordUI(User loggedInUser)
         {
-            Console.WriteLine("\n--- ACCOUNT VERIFICATION ---");
+            Console.Clear();
+            Console.WriteLine("=== CHANGE PASSWORD ===");
 
-            Console.Write("Enter Email: ");
-            string email = Console.ReadLine()?.Trim();
+            Console.Write("Enter current password: ");
+            string currentPassword = Console.ReadLine()?.Trim();
 
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                Console.WriteLine("Email cannot be empty.");
-                return;
-            }
+            Console.Write("Enter new password: ");
+            string newPassword = Console.ReadLine()?.Trim();
 
-            Console.Write("Enter Verification Code: ");
-            string code = Console.ReadLine()?.Trim();
-
-            if (string.IsNullOrWhiteSpace(code))
-            {
-                Console.WriteLine("Verification code cannot be empty.");
-                return;
-            }
+            Console.Write("Confirm new password: ");
+            string confirmPassword = Console.ReadLine()?.Trim();
 
             try
             {
-                // Calling your existing UserService method
-                bool isSuccess = _userService.VerifyUser(email, code);
+                _userService.ChangePassword(loggedInUser.Email, currentPassword, newPassword, confirmPassword);
+                _loggerService.LogActivity(loggedInUser.Username, "Changed password successfully.");
+                loggedInUser.Password = newPassword;
+
+                Console.WriteLine("\n[SUCCESS] Your password has been updated successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\n[ERROR] Failed to change password: {ex.Message}");
+            }
+        }
+
+        private static void VerifyAccount(ClientUser clientUser)
+        {
+            Console.WriteLine("\n--- ACCOUNT VERIFICATION ---");
+
+            if (clientUser.IsVerified)
+            {
+                Console.WriteLine("Your account is already verified!");
+                return;
+            }
+            try
+            {
+                Console.WriteLine("Sending verification code to your email...");
+                _userService.SendVerificationCode(clientUser.Email);
+                Console.WriteLine("Code sent! Check your email inbox.");
+
+                Console.Write("\nEnter Verification Code: ");
+                string code = Console.ReadLine().Trim();
+
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    Console.WriteLine("Verification code cannot be empty.");
+                    return;
+                }
+
+                bool isSuccess = _userService.VerifyUser(clientUser.Email, code);
 
                 if (isSuccess)
                 {
-                    Console.WriteLine("Account verified successfully! You can now log in.");
+                    _loggerService.LogActivity(clientUser.Username, "Verified account successfully");
+                    Console.WriteLine("Account verified successfully!");
                 }
             }
             catch (Exception ex)
@@ -321,21 +357,23 @@ namespace Library.UI
             }
         }
 
-        public static void AdminMenu(User admin)
+        public static void AdminMenu(AdminUser admin)
         {
-            AdminUser adminUser = admin as AdminUser;
+
+            _loggerService.LogActivity(admin.Username, "Admin logged in");
             bool loggedIn = true;
 
             while (loggedIn)
             {
-                Console.WriteLine($"\n=== ADMIN DASHBOARD (Welcome, {adminUser.Username}) ===");
+                Console.WriteLine($"\n=== ADMIN DASHBOARD (Welcome, {admin.Username}) ===");
                 Console.WriteLine("1. View Book Catalog ");
                 Console.WriteLine("2. Add New Book ");
                 Console.WriteLine("3. Update Book Quantity ");
                 Console.WriteLine("4. Remove a Book ");
                 Console.WriteLine("5. View & Manage Borrow Requests (Approve/Reject)");
                 Console.WriteLine("6. View All Users ");
-                Console.WriteLine("7. Log Out ");
+                Console.WriteLine("7. Change password");
+                Console.WriteLine("8. Log Out ");
                 Console.Write("Choose an option: ");
 
                 int.TryParse(Console.ReadLine(), out int choice);
@@ -345,22 +383,26 @@ namespace Library.UI
                         ViewAllBooks();
                         break;
                     case 2:
-                        AddNewBook();
+                        AddNewBook(admin);
                         break;
                     case 3:
-                        UpdateBookQuantity();
+                        UpdateBookQuantity(admin);
                         break;
                     case 4:
-                        RemoveBook();
+                        RemoveBook(admin);
                         break;
                     case 5:
-                        ManageBorrowRequests();
+                        ManageBorrowRequests(admin);
                         break;
                     case 6:
                         ViewAllUsers();
                         break;
                     case 7:
+                        ChangePasswordUI(admin);
+                        break;
+                    case 8:
                         Console.WriteLine("Logging out of admin panel...");
+                        _loggerService.LogActivity(admin.Username, "Admin logged out");
                         loggedIn = false;
                         break;
                     default:
@@ -369,7 +411,7 @@ namespace Library.UI
                 }
             }
         }
-        private static void AddNewBook()
+        private static void AddNewBook(AdminUser admin)
         {
             Console.Write("Enter Book ISBN: ");
             string isbn = Console.ReadLine()?.Trim();
@@ -390,9 +432,10 @@ namespace Library.UI
             };
 
             _bookService.AddBook(newBook);
+            _loggerService.LogActivity(admin.Username, $"Added new book '{title}' (ISBN: {isbn}, Qty: {quantity})");
             Console.WriteLine("Book added successfully!");
         }
-        private static void UpdateBookQuantity()
+        private static void UpdateBookQuantity(AdminUser admin)
         {
             Console.WriteLine("\n--- UPDATE BOOK QUANTITY ---");
             Console.Write("Enter Book ID: ");
@@ -413,6 +456,7 @@ namespace Library.UI
             try
             {
                 _bookService.UpdateQuantity(key, newQty);
+                _loggerService.LogActivity(admin.Username, $"Updated quantity for Book ID '{key}' to {newQty}");
                 Console.WriteLine("Book quantity updated successfully!");
             }
             catch (Exception ex)
@@ -420,7 +464,7 @@ namespace Library.UI
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
-        private static void RemoveBook()
+        private static void RemoveBook(AdminUser admin)
         {
             Console.WriteLine("\n--- REMOVE BOOK ---");
 
@@ -441,6 +485,7 @@ namespace Library.UI
                 try
                 {
                     _bookService.DeleteBook(bookId);
+                    _loggerService.LogActivity(admin.Username, $"Removed book ID '{bookId}'");
                     Console.WriteLine("Book removed successfully!");
                 }
                 catch (Exception ex)
@@ -453,7 +498,7 @@ namespace Library.UI
                 Console.WriteLine("Action canceled.");
             }
         }
-        private static void ManageBorrowRequests()
+        private static void ManageBorrowRequests(AdminUser admin)
         {
             var activeBorrows = _borrowService.GetActiveBorrows();
             var pendingRequests = activeBorrows.Where(b => b.BorrowStatus == Status.Pending).ToList();
@@ -483,11 +528,13 @@ namespace Library.UI
                 if (choice == "A")
                 {
                     _borrowService.ApproveBorrow(borrowId);
+                    _loggerService.LogActivity(admin.Username, $"Approved borrow request ID '{borrowId}'");
                     Console.WriteLine("Request approved successfully!");
                 }
                 else if (choice == "R")
                 {
                     _borrowService.RejectBorrow(borrowId);
+                    _loggerService.LogActivity(admin.Username, $"Rejected borrow request ID '{borrowId}'");
                     Console.WriteLine("Request rejected.");
                 }
                 else
@@ -528,9 +575,9 @@ namespace Library.UI
                 return;
             }
 
-            if (loggedInUser is AdminUser)
+            if (loggedInUser is AdminUser admin)
             {
-                AdminMenu(loggedInUser);
+                AdminMenu(admin);
             }
             else if (loggedInUser is ClientUser client)
             {

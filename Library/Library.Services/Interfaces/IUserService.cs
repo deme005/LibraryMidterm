@@ -11,7 +11,7 @@ namespace Library.Services.Interfaces
 
         User LoginUser(string email, string password);
 
-        void SendVerificationCode(string email, string verificationCode);
+        void SendVerificationCode(string email);
 
         bool VerifyUser(string email, string verificationCode);
     }

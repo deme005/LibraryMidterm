@@ -1,1 +1,2 @@
-﻿
+{"Quantity":7,"ISBN":"qwer","Key":"qwer","Author":"dimitri","Title":"rame3"}
+{"Quantity":100,"ISBN":"asd","Key":"asd","Author":"me","Title":"rame1"}

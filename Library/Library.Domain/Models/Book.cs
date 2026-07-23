@@ -9,7 +9,6 @@ namespace Library.Domain.Models
     {
 		private string title;
 		private string author;
-		private string genre;
 		private string isbn;
 		private int quantity;
 
@@ -39,18 +38,7 @@ namespace Library.Domain.Models
         }
         public string Key => ISBN;
 
-        public string Genre
-		{
-			get {  return genre; }
-			set
-			{
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Invalid input.");
-                }
-                genre = value.Trim();
-            }
-		}
+        
 
 		public string Author
 		{
@@ -85,7 +73,6 @@ namespace Library.Domain.Models
         {
             Title = title;
             Author = author;
-            Genre = genre;
             ISBN = isbn;
             Quantity = quantity;
         }

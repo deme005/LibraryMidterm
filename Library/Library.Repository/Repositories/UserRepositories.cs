@@ -16,6 +16,8 @@ namespace Library.Repository.Repositories
         protected string FileName = "data.txt";
         protected string filePath => @"C:\Users\deme\Desktop\‏\codes\doit_midterm\LibraryMidterm\Library\Library.Repository\Data\" + FileName;
 
+        //private readonly string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
+
         public UserRepositories()
         {
             string directory = Path.GetDirectoryName(filePath);
@@ -98,10 +100,10 @@ namespace Library.Repository.Repositories
                     var jsonNode = JsonNode.Parse(item);
                     if (jsonNode == null) continue;
 
-                    var roleNode = jsonNode["Role"];
-                    if (roleNode != null)
+                    int roleVal = jsonNode["Role"]?.GetValue<int>() ?? -1;
+                    if (roleVal != null)
                     {
-                        string roleStr = roleNode.ToString();
+                        string roleStr = roleVal.ToString();
 
                         if (roleStr == "Admin" || roleStr == "1")
                         {

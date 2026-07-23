@@ -13,10 +13,6 @@ namespace Library.UI
         static void Main(string[] args)
         {
             ConsoleUI.FirstMenu();
-            
-
-            
-
         }
         
     }

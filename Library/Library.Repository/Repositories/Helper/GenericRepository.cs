@@ -25,7 +25,7 @@ namespace Library.Repository.Repositories.Helper
             List<T> remeiningValues = values.Where(x => x.Key != entity.Key).ToList();
             SaveChanges(remeiningValues);
         }
-
+        
         public virtual T Get(Func<T, bool> predicate)
         {
             List<T> values = GetAll();

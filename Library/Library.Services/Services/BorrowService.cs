@@ -86,6 +86,14 @@ namespace Library.Services.Services
                 throw new InvalidOperationException("Book is out of stock.");
             }
             var allBorrows = _borrowRepository.GetAll();
+            bool hasActiveOrPendingBorrow = allBorrows.Any(b =>
+        b.UserId == client.ID &&
+        (b.BorrowStatus == Status.Pending || b.BorrowStatus == Status.Approved));
+
+            if (hasActiveOrPendingBorrow)
+            {
+                throw new InvalidOperationException("You already have an active or pending book request. Please return or resolve your current book before requesting another.");
+            }
             string nextKey = (allBorrows.Count + 1).ToString();
 
             BorrowRecord record = new BorrowRecord

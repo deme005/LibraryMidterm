@@ -57,7 +57,7 @@ namespace Library.Domain.Models
             get { return returnDate; }
             set
             {
-                if (value < DateTime.Now)
+                if (value != default(DateTime) && value < DateTime.Now)
                 {
                     throw new ArgumentException("Return date cannot be in the past.");
                 }

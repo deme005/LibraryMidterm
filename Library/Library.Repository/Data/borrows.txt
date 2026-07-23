@@ -1,1 +1,1 @@
-﻿
+{"DateOfBorrow":"2026-07-23T16:10:50.390464+04:00","BorrowStatus":0,"BorrowID":"1","Key":"1","UserId":5,"ISBN":"asd","ReturnDate":"0001-01-01T00:00:00"}
