@@ -47,12 +47,12 @@ namespace Library.Domain
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
+                    
                     throw new ArgumentException("Username can not be empty!");
                 }
                 username = value.Trim();
             }
         }
-        public string Key => Username;
 
         public string Email
 

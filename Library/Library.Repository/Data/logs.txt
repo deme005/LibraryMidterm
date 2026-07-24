@@ -20,3 +20,19 @@
 [2026-07-23 20:25:24] User: temp | Action: Client logged in
 [2026-07-23 20:27:30] User: temp1 | Action: Client logged in
 [2026-07-23 20:27:53] User: temp1 | Action: Verified account successfully
+[2026-07-24 13:14:48] User: deme005 | Action: Client logged in
+[2026-07-24 13:15:45] User: deme005 | Action: Client logged in
+[2026-07-24 13:16:55] User: deme005 | Action: Clinet logged out
+[2026-07-24 13:22:16] User: deme005 | Action: Client logged in
+[2026-07-24 13:22:35] User: deme005 | Action: Clinet logged out
+[2026-07-24 13:24:19] User: deme125 | Action: Client logged in
+[2026-07-24 13:25:24] User: deme125 | Action: Verified account successfully
+[2026-07-24 13:25:50] User: deme125 | Action: Clinet logged out
+[2026-07-24 13:25:57] User: deme125 | Action: Client logged in
+[2026-07-24 13:26:12] User: deme125 | Action: Requested borrow for book ISBN: asd
+[2026-07-24 13:26:16] User: deme125 | Action: Clinet logged out
+[2026-07-24 13:26:29] User: admin | Action: Admin logged in
+[2026-07-24 13:26:55] User: admin | Action: Rejected borrow request ID '1'
+[2026-07-24 13:27:06] User: admin | Action: Approved borrow request ID '2'
+[2026-07-24 13:27:09] User: admin | Action: Admin logged out
+[2026-07-24 13:27:19] User: deme125 | Action: Client logged in

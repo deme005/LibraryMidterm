@@ -12,6 +12,8 @@ namespace Library.Repository.Repositories
     {
         protected override string FileName => "borrows.txt";
 
+        protected string filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\Library.Repository\Data", FileName);
+
         public List<BorrowRecord> GetActiveBorrows()
         {
             return GetAll().Where(b => b.BorrowStatus == Status.Approved).ToList();

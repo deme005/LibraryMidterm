@@ -11,6 +11,7 @@ namespace Library.Repository.Repositories
     {
         protected override string FileName => "books.txt";
 
+        protected string filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\Library.Repository\Data", FileName);
         public Book GetByTitle(string title)
         {
             if (string.IsNullOrEmpty(title))

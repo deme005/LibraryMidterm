@@ -8,7 +8,7 @@ namespace Library.Services.Services
     public class LoggerService : ILoggerService
     {
         private readonly string FileName = "logs.txt";
-        protected string filePath => @"C:\Users\deme\Desktop\‏\codes\doit_midterm\LibraryMidterm\Library\Library.Repository\Data\" + FileName;
+        protected string filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\Library.Repository\Data", FileName);
         public void LogActivity(string username, string activity)
         {
             try

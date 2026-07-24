@@ -14,5 +14,6 @@ namespace Library.Services.Interfaces
         void SendVerificationCode(string email);
 
         bool VerifyUser(string email, string verificationCode);
+        void ChangePassword(string email, string currentPassword, string newPassword, string confirmPassword);
     }
 }

@@ -14,8 +14,8 @@ namespace Library.Repository.Repositories
     public class UserRepositories : IFileMeneger
     {
         protected string FileName = "data.txt";
-        protected string filePath => @"C:\Users\deme\Desktop\‏\codes\doit_midterm\LibraryMidterm\Library\Library.Repository\Data\" + FileName;
-
+        // protected string filePath => @"C:\Users\deme\Desktop\‏\codes\doit_midterm\LibraryMidterm\Library\Library.Repository\Data\" + FileName;
+        protected string filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\Library.Repository\Data", FileName);
         //private readonly string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
 
         public UserRepositories()

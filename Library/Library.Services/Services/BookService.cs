@@ -32,21 +32,7 @@ namespace Library.Services.Services
             return _bookRepository.GetAll().Where(b => b.Title.Contains(name.ToLower()) || b.Author.Contains(name.ToLower())).ToList();
         }
 
-        public void AdjustInventory(string bookId, int amount)
-        {
-            Book book = _bookRepository.GetByKey(bookId);
-            if (book == null)
-            {
-                throw new Exception("Book not found.");
-            }
-            if (book.Quantity + amount < 0)
-            {
-                throw new InvalidOperationException("Not enough copies available to borrow.");
-            }
-
-            book.Quantity += amount;
-            _bookRepository.Update(book);
-        }
+        
         public void AddBook(Book book)
         {
             if (book == null)

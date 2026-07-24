@@ -11,7 +11,9 @@ namespace Library.Repository.Repositories.Helper
     {
         protected abstract string FileName { get; }
 
-        protected string filePath => @"C:\Users\deme\Desktop\‏\codes\doit_midterm\LibraryMidterm\Library\Library.Repository\Data\" + FileName;
+        protected string filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\Library.Repository\Data", FileName);
+
+
 
         public virtual void Add(T entity)
         {
